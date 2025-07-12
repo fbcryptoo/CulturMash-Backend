@@ -23,13 +23,12 @@ export default async function handler(req, res) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        version: "db21e4532518ae7f39ec0f02aa8a5e4915944e677fbf05b10dee3b2815819a8",
+        version: "8e59c284ce2e64c8da83ec73a2d49ff4a0ae5b3e507b4f1f3bfaabdb021c377a",
         input: {
           prompt: prompt,
-          width: 768,
-          height: 768,
-          num_inference_steps: 25,
-          guidance_scale: 6.5
+          aspect_ratio: "1:1", // or "4:3", "3:2", "16:9"
+          safety_filter_level: "block_medium_and_above", // keeps it PG-13
+          output_format: "png"
         }
       })
     }).then(r => r.json());
