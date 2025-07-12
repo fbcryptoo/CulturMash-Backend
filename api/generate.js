@@ -1,17 +1,26 @@
 export default async function handler(req, res) {
+  // ✅ Allow CORS for frontend requests
+  if (req.method === "OPTIONS") {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    return res.status(200).end();
+  }
+
+  res.setHeader("Access-Control-Allow-Origin", "*");
+
+  // ✅ Only allow POST requests
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Only POST requests allowed" });
+    return res.status(405).json({ error: "Method not allowed" });
   }
 
   const { icon1, icon2, vibe } = req.body;
 
   if (!icon1 || !icon2 || !vibe) {
-    return res.status(400).json({ error: "Missing required fields" });
+    return res.status(400).json({ error: "Missing icon1, icon2, or vibe" });
   }
 
-  const prompt = `${icon1} + ${icon2} in a ${vibe} setting, anime style, vibrant, chaotic, high quality`;
-
-  console.log("🧠 Hugging Face prompt:", prompt);
+  const prompt = `${icon1} + ${icon2} in a ${vibe} setting, vibrant, chaotic, meme, dreamlike, high quality anime art`;
 
   try {
     const response = await fetch("https://api-inference.huggingface.co/models/prompthero/openjourney", {
@@ -33,7 +42,7 @@ export default async function handler(req, res) {
     res.setHeader("Content-Type", "image/png");
     res.send(Buffer.from(buffer));
   } catch (err) {
-    console.error("❌ Unexpected error:", err);
+    console.error("❌ Unexpected Error:", err);
     res.status(500).json({ error: "Something went wrong" });
   }
 }
