@@ -31,11 +31,11 @@ export default async function handler(req, res) {
         version: "4e9de784f7c9f82e495b455f325499667148bd351ad83d14c12a87421ec358ab",
         input: {
           prompt: prompt,
-          width: 1024,
-          height: 1024,
+          width: 768,
+          height: 768,
           scheduler: "K_EULER",
-          num_inference_steps: 30,
-          guidance_scale: 7.5
+          num_inference_steps: 25,
+          guidance_scale: 6.5
         }
       })
     }).then(r => r.json());
