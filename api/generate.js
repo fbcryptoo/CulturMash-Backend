@@ -1,42 +1,41 @@
-
 export default async function handler(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-
-  if (req.method === "OPTIONS") return res.status(200).end();
-  if (req.method !== "POST") return res.status(405).json({ error: "Only POST requests allowed" });
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Only POST requests allowed" });
+  }
 
   const { icon1, icon2, vibe } = req.body;
   if (!icon1 || !icon2 || !vibe) {
     return res.status(400).json({ error: "Missing fields" });
   }
 
-  const prompt = "a cat wearing sunglasses in a sunny park";
+  const prompt = `${icon1} + ${icon2} in a ${vibe} setting, vibrant, chaotic, meme, dreamlike, high-res digital art`;
 
-  console.log("🧠 Hugging Face prompt:", prompt);
+  // 👇 REMOVE everything from here...
 
+  // Replicate fetch + polling logic
+
+  // 👇 ...AND REPLACE with this:
   try {
-    const hfResponse = await fetch("https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2", {
+    const response = await fetch("https://api-inference.huggingface.co/models/prompthero/openjourney", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.HUGGINGFACE_API_TOKEN}`
+        "Authorization": `Bearer ${process.env.HUGGINGFACE_API_TOKEN}`,
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({ inputs: prompt })
     });
 
-    if (!hfResponse.ok) {
-      const error = await hfResponse.text();
-      console.error("❌ HF API Error:", error);
-      return res.status(500).json({ error: "Hugging Face generation failed", detail: error });
+    if (!response.ok) {
+      const err = await response.json();
+      console.error("❌ HF API Error:", err);
+      return res.status(500).json({ error: "Image generation failed" });
     }
 
-    const imageBuffer = await hfResponse.arrayBuffer();
+    const buffer = await response.arrayBuffer();
     res.setHeader("Content-Type", "image/png");
-    return res.send(Buffer.from(imageBuffer));
+    res.send(Buffer.from(buffer));
   } catch (err) {
-    console.error("🔥 Unhandled HF error:", err);
-    return res.status(500).json({ error: "Unhandled error", detail: err.message });
+    console.error("❌ Unexpected error:", err);
+    res.status(500).json({ error: "Something went wrong." });
   }
 }
