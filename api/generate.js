@@ -1,4 +1,3 @@
-
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
@@ -51,13 +50,12 @@ export default async function handler(req, res) {
           "Authorization": `Token ${process.env.REPLICATE_API_TOKEN}`
         }
       }).then(r => r.json());
-
       finalPrediction = check;
       console.log(`🔁 Status check ${checks}: ${finalPrediction.status}`);
     }
 
     if (finalPrediction.status === "succeeded") {
-      const imageUrl = finalPrediction.output;
+      const imageUrl = finalPrediction.output[0];
       console.log("✅ Image generated:", imageUrl);
       const imageRes = await fetch(imageUrl);
       const imageBuffer = await imageRes.arrayBuffer();
