@@ -12,7 +12,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Missing fields" });
   }
 
-  const prompt = `${icon1} + ${icon2} in a ${vibe} setting, vibrant, chaotic, meme, dreamlike, high-res digital art`;
+  const prompt = "a cat wearing sunglasses in a sunny park";
 
   console.log("🧠 Hugging Face prompt:", prompt);
 
