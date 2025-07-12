@@ -33,7 +33,6 @@ export default async function handler(req, res) {
           prompt: prompt,
           width: 768,
           height: 768,
-          scheduler: "K_EULER",
           num_inference_steps: 25,
           guidance_scale: 6.5
         }
